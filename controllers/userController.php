@@ -43,6 +43,32 @@ class UserController {
         echo json_encode($user);
     }
 
+
+    public function loginUser() {
+        $data = json_decode(file_get_contents("php://input"));
+    
+        if (!empty($data->email) && !empty($data->password)) {
+            $this->user->email = $data->email;
+            $this->user->password = $data->password;
+    
+            // Intentar el inicio de sesión
+            if ($this->user->login()) {
+                // Devolver la información básica del usuario al iniciar sesión exitosamente
+                echo json_encode([
+                    "message" => "Inicio de sesión exitoso.",
+                    "user_id" => $this->user->user_id,
+                    "username" => $this->user->username
+                ]);
+            } else {
+                echo json_encode(["message" => "Correo o contraseña incorrectos."]);
+            }
+        } else {
+            echo json_encode(["message" => "Datos incompletos."]);
+        }
+    }
+    
+    
+
     public function updateUser() {
         $data = json_decode(file_get_contents("php://input"));
         if (!empty($data->user_id) && !empty($data->username) && !empty($data->email) && !empty($data->password)) {

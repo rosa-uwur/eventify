@@ -69,6 +69,36 @@ class User {
         return false;
     }
 
+
+    public function login() {
+        $query = "SELECT user_id, username, password FROM " . $this->table_name . " WHERE email = :email";
+        $stmt = $this->conn->prepare($query);
+        
+        // Limpiar datos
+        $this->email = htmlspecialchars(strip_tags($this->email));
+    
+        // Asignar valor del email
+        $stmt->bindParam(':email', $this->email);
+    
+        $stmt->execute();
+    
+        // Si se encuentra un usuario
+        if ($stmt->rowCount() > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            // Verificar la contraseña
+            if (password_verify($this->password, $row['password'])) {
+                // Las credenciales son correctas
+                $this->user_id = $row['user_id'];
+                $this->username = $row['username'];
+                return true;
+            }
+        }
+        // Las credenciales son incorrectas
+        return false;
+    }
+    
+
     public function delete() {
         $query = "DELETE FROM " . $this->table_name . " WHERE user_id = :user_id";
         $stmt = $this->conn->prepare($query);

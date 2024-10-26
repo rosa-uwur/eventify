@@ -25,6 +25,8 @@ switch ($request_method) {
             $usuarioController->updateUser();
         } else if ($action == 'delete_user') {
             $usuarioController->deleteUser();
+        } else if ($action == 'login') {
+            $usuarioController->loginUser(); // Llama al método de inicio de sesión
         }
         // Acciones de evento
         else if ($action == 'create_event') {
